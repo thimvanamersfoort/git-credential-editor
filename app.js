@@ -8,6 +8,7 @@ const git_shell = require('./controllers/git_shell');
 
 (async () => {
 
+  // get data and map accordingly
   var _data = await fs.readFile('./access.json', 'utf-8');
   var data = JSON.parse(_data);
 
@@ -19,6 +20,7 @@ const git_shell = require('./controllers/git_shell');
     }
   });
 
+  // get response to what user to change to
   var response = await prompts({
     type: 'select',
     name: 'value',
@@ -28,7 +30,15 @@ const git_shell = require('./controllers/git_shell');
     initial: 0
   });
 
-  console.log(response);
+  var user = data.find(user => user.username === response.value);
+  if(!user) throw new Error('User undefined [Line: 34]');
 
-
+  /*
+    To-Do:
+    1. git shell async implementeren, evt via powershell
+    2. alle git info verzamelen van de working directory
+    3. link parsen
+    4. wincred_manager package implementeren via npm
+  */
+ 
 })();
