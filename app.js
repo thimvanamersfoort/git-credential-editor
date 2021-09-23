@@ -2,37 +2,33 @@
 
 const prompts = require('prompts');
 const urlParser = require('url-parse');
-const fs = require('fs');
+const fs = require('fs/promises');
 const git_shell = require('./controllers/git_shell');
 
-let git = new git_shell();
 
-fs.readFile('./access.json', 'utf-8', (err, contents) => {
-  if(err) throw new Error(err.message);
+(async () => {
 
-  // get user data and map to new array to use in questions
-  var data = JSON.parse(contents);
+  var _data = await fs.readFile('./access.json', 'utf-8');
+  var data = JSON.parse(_data);
+
   var questions = data.map((orig) => {
     return {
       title: orig.username,
+      description: `Email: ${orig.email}`,
       value: orig.username
     }
   });
 
-  // Get username to change
-  var response;
-  (async () => {
-    response = await prompts({
-      type: 'select',
-      name: 'value',
-      message: 'Pick a username',
-      choices: questions,
-      initial: 1
-    });
+  var response = await prompts({
+    type: 'select',
+    name: 'value',
+    hint: 'Make sure the credentials are saved in "./access.json"',
+    message: 'Pick a username',
+    choices: questions,
+    initial: 0
+  });
 
-    console.log(response);
-  })();
-  
+  console.log(response);
 
-})
 
+})();
