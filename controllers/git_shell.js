@@ -2,8 +2,8 @@ const shell = require('shelljs');
 
 class gitShell{
 
-  getRemoteName(){
-    var output = shell.exec('git remote', {silent: true})
+  async getRemoteName(){
+    var output = await shell.exec('git remote', {silent: true, async: true})
 
     if(output['stderr']) return output['stderr'];
     if(output['stdout']) return output['stdout'].replace('\n', '');
@@ -11,9 +11,9 @@ class gitShell{
     return null;
   }
 
-  getRemoteUrl(remoteName){
-    var output = shell.exec(`git config --get remote.${remoteName}.url`, {silent: true});
-    return output['stdout'].replace('\n', '');
+  async getRemoteUrl(remoteName){
+    var output = await shell.exec(`git config --get remote.${remoteName}.url`, {silent: true, async: true});
+    return await output['stdout'].replace('\n', '');
   }
 
 }
