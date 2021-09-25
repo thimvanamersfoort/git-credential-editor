@@ -4,6 +4,7 @@ const prompts = require('prompts');
 const urlParser = require('url-parse');
 const fs = require('fs/promises');
 const git_shell = require('./controllers/git_shell');
+const shell = require('shelljs');
 
 
 (async () => {
@@ -40,5 +41,12 @@ const git_shell = require('./controllers/git_shell');
     3. link parsen
     4. wincred_manager package implementeren via npm
   */
- 
+
+  var remoteName = shell.exec('git remote', {silent: true}).stdout.replace('\n', '');
+  var remoteUrl = shell.exec(`git config --get remote.${remoteName}.url`, {silent: true}).stdout.replace('\n', '');
+
+  console.log([remoteName, remoteUrl]);
+
+
+
 })();
