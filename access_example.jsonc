@@ -2,3 +2,5 @@
   {"username": "GITHUB USERNAME", "email": "EMAIL FOR COMMIT INFO", "password": "GITHUB ACCESS TOKEN"}, 
   {"username": "GITHUB USERNAME", "email": "EMAIL FOR COMMIT INFO", "password": "GITHUB ACCESS TOKEN"}
 ]
+
+// RENAME THIS FILE TO "access.json" AND PUT IN YOUR OWN CREDENTIALS
