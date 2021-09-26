@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
 const prompts = require('prompts');
-const urlParser = require('url-parse');
+const Url = require('url-parse');
 const fs = require('fs/promises');
-const git_shell = require('./controllers/git_shell');
 const shell = require('shelljs');
 
 
@@ -36,17 +35,16 @@ const shell = require('shelljs');
 
   /*
     To-Do:
-    1. git shell async implementeren, evt via powershell
-    2. alle git info verzamelen van de working directory
     3. link parsen
     4. wincred_manager package implementeren via npm
   */
 
   var remoteName = shell.exec('git remote', {silent: true}).stdout.replace('\n', '');
   var remoteUrl = shell.exec(`git config --get remote.${remoteName}.url`, {silent: true}).stdout.replace('\n', '');
+  if(!remoteName || !remoteUrl) throw new Error('Git remote info not found [Line: 47]');
 
-  console.log([remoteName, remoteUrl]);
-
+  var remoteUrlWithAuth = new Url(remoteUrl).set('username', user.username).toString();
+  console.log([remoteUrl, remoteUrlWithAuth]);
 
 
 })();
