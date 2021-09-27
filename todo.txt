@@ -2,16 +2,12 @@ Github gebruikt een credential manager om via tokens met github te praten.
 Je moet read / write naar deze credential manager. Per gebruiker kan je dan in
 een .env file de gerelateerde key:value pairs opslaan in de vorm van USER:ACCESS_TOKEN.
 
-1. zoek git link info op in config files (git_shell.js)
-2. verzamel gebruikersinfo via prompt en check of deze bestaan
-3. verdeel link via url_parser
-4. check voor link aanwezigheid in wincred_manager
-  --> aanwezig = veranderen met nieuwe username
-  --> niet aanwezig = 2 nieuwe entries voor git repository
+1. externe PS1 scripts met (PARAMETER INPUT VANAF JS FILE) en (OUTPUT IN JS FILE IN VORM VAN JSON).
+2. Error handling voor deze PS1 scripts
+3. Verwijder alle gevonden github credentials
+4. Voeg nieuwe github credentials toe, op basis van DESIRED_USER object in app.js
 
-(optioneel: check of gebruiker toegang heeft tot repository)
-
-5. git config --global user.name / user.email veranderen naar values in access.json file
+--> als PS1 te ingewikkeld is, try catch toevoegen in credential_helper.js
 
 TIPS:
 
