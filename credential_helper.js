@@ -14,7 +14,7 @@ async function getCredential(target){
 async function removeCredential(target) {
   const ps = new Powershell({noProfile: true, verbose: false});
 
-  await ps.addCommand(`Remove-StoredCredential -Target '${target}' -ErrorAction SilentlyContinue -ErrorVariable err; ConvertTo-Json $err -Compress`);
+  await ps.addCommand(`Remove-StoredCredential -Target '${target}' -ErrorAction SilentlyContinue -Verbose`);
   var result = await ps.invoke();
   await ps.dispose();
 
