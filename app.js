@@ -45,38 +45,63 @@ const cred_helper = require('./credential_helper');
 
     // get desired + selected user from script
     const DESIRED_USER = data.find(user => user.username === response.desired);
-    if(!DESIRED_USER) throw new Error('Desired User undefined [Line: 49]');
+    if(!DESIRED_USER) throw new Error('Desired User undefined [Line: 48]');
 
     const SELECTED_USER = data.find(user => user.username === response.selected);
-    if(!SELECTED_USER) throw new Error('Selected User undefined [Line: 52]');
+    if(!SELECTED_USER) throw new Error('Selected User undefined [Line: 51]');
 
     // check if git remote is found --> and configure git remote name and links
     var remoteName = shell.exec('git remote', {silent: true}).stdout.replace('\n', '');
     var remoteUrl = shell.exec(`git config --get remote.${remoteName}.url`, {silent: true}).stdout.replace('\n', '');
-    if(!remoteName || !remoteUrl) throw new Error('Git remote info not found [Line: 47]');
+    if(!remoteName || !remoteUrl) throw new Error('Git remote info not found [Line: 56]');
 
     const remoteUrlWithAuthSelected = new Url(remoteUrl).set('username', SELECTED_USER.username).toString();
     const remoteUrlWithAuthDesired = new Url(remoteUrl).set('username', DESIRED_USER.username).toString();
 
-    console.log([remoteUrl, remoteUrlWithAuthSelected, remoteUrlWithAuthDesired]);
-    
-    /*
-      1. Check of git remote authentication aanwezig is
-      als aanwezig is
-        --> verwijder alle storedCreds
-        --> maak nieuwe storedCreds
-      als niet aanwezig is
-        --> maak nieuwe storedCreds
-    */
+    console.table({
+      "Remote Name": remoteName,
+      "Remote URL": remoteUrl,
+      "Selected remote URL with Auth": remoteUrlWithAuthSelected,
+      "Desired remote URL with Auth": remoteUrlWithAuthDesired
+    });
 
-    // get wincred manager results
+    // try to get wincred manager results and remove them
+    console.log('\n-----> REMOVING OLD USERS FROM Wincred_MGR <-----');
+    console.log("Notice: If old creds can't be found, they will be overwritten with current credentials.");
+
     var result = await cred_helper.getCredential("git:" + remoteUrl);
     var resultWithAuth = await cred_helper.getCredential("git:" + remoteUrlWithAuthSelected);
 
-    if(result) console.log(result);
-    if(resultWithAuth) console.log(resultWithAuth);
+    if(result) {
+      var remove = await cred_helper.removeCredential(result.TargetName);
+      if(remove)
+        console.log(`\nTry to remove credentials from target: ${result.TargetName}`);
+        console.log(`Msg from Wincred_MGR: ${remove}`);
+    }
+    if(resultWithAuth){
+      var removeWithAuth = await cred_helper.removeCredential(resultWithAuth.TargetName);
+      if(removeWithAuth)
+        console.log(`\nTry to remove credentials from target: ${resultWithAuth.TargetName}`);
+        console.log(`Msg from Wincred_MGR: ${removeWithAuth}`);
+    }
 
+    // add new credential info to wincred manager
+    var newCred = await cred_helper.newCredential("git:" + remoteUrl, DESIRED_USER.username, DESIRED_USER.password);
+    var newCredWithAuth = await cred_helper.newCredential("git:" + remoteUrlWithAuthDesired, DESIRED_USER.username, DESIRED_USER.password);
 
+    if(newCred) 
+      newCred = JSON.parse(newCred);
+      console.log('\n -----> CREATED NEW USER <-----');
+      console.log(`Msg from Wincred_MGR: ${newCred.UserName} ${newCred.Comment}`);
+
+    if(newCredWithAuth)
+      newCredWithAuth = JSON.parse(newCredWithAuth);
+      console.log('\n -----> CREATED NEW USER WITH AUTH <-----');
+      console.log(`Msg from Wincred_MGR: ${newCred.UserName} ${newCred.Comment}`);
+
+    var commitChange = cred_helper.changeCommitName(DESIRED_USER.username, DESIRED_USER.email);
+    if(commitChange == true) console.log('\n -----> GIT CONFIG VALUES CHANGED <-----')
+    else console.log('\n -----> ERROR CHANGING GIT CONFIG VALUES <-----')
 
   }
   catch(err){
