@@ -1,5 +1,5 @@
+![Logo](logo.png)
 # Git Credential Editor: A Github credential store for Windows
-
 ### Why this application?
 I was enjoying my Github / VS-Code developing experience, until I noticed a small annoyance. To change credentials which Git uses to authenticate to your Git(hub) Remote Repository, you need to alter the credential store which Git uses.
 
