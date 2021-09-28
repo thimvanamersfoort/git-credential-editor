@@ -4,8 +4,9 @@
   "description": "A package to store and use Github tokens to switch from Git committer, using the Windows Credential Manager API and Github Personal-Access Tokens.",
   "main": "app.js",
   "bin": {
-    "generator": "./app.js"
+    "git-cr-editor": "./app.js"
   },
+  "preferGlobal": true,
   "scripts": {
     "start": "node app.js"
   },
