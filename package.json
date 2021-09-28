@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A package to store and use Github tokens to switch from Git committer, using the Windows Credential Manager API and Github Personal-Access Tokens.",
   "main": "app.js",
-  "homepage": "https://github.com/thimvanamersfoort/git-credential-editor", 
+  "homepage": "https://github.com/thimvanamersfoort/git-credential-editor",
   "bin": {
     "git-credential-editor": "./app.js"
   },
@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "node-powershell": "^4.0.0",
+    "path": "^0.12.7",
     "prompts": "^2.4.1",
     "shelljs": "^0.8.4",
     "url-parse": "^1.5.3"

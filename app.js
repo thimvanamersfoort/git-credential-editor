@@ -5,13 +5,14 @@ const Url = require('url-parse');
 const fs = require('fs/promises');
 const shell = require('shelljs');
 const Powershell = require('node-powershell');
-const cred_helper = require('./credential_helper');
+const path = require('path'); 
+const cred_helper = require(path.join(__dirname, 'credential_helper.js'));
 
 (async () => {
   try{
 
     // get data and map accordingly
-    var data = await fs.readFile('./access.json', 'utf-8');
+    var data = await fs.readFile(path.join(__dirname, 'access.json'), 'utf-8');
     data = JSON.parse(data);
 
     var _choices = data.map((orig) => {
@@ -25,7 +26,7 @@ const cred_helper = require('./credential_helper');
     {
       type: 'select',
       name: 'selected',
-      hint: 'Make sure the credentials are saved in "./access.json"',
+      hint: `Make sure the credentials are saved in "${path.join(__dirname, 'access.json')}"`,
       message: 'Pick username currently selected for this git repo',
       choices: _choices,
       initial: 0
@@ -33,7 +34,7 @@ const cred_helper = require('./credential_helper');
     {
       type: 'select',
       name: 'desired',
-      hint: 'Make sure the credentials are saved in "./access.json"',
+      hint: `Make sure the credentials are saved in "${path.join(__dirname, 'access.json')}"`,
       message: 'Pick username you want to change to',
       choices: _choices,
       initial: 0
@@ -99,9 +100,8 @@ const cred_helper = require('./credential_helper');
       console.log('\n -----> CREATED NEW USER WITH AUTH <-----');
       console.log(`Msg from Wincred_MGR: ${newCred.UserName} ${newCred.Comment}`);
 
-    var commitChange = cred_helper.changeCommitName(DESIRED_USER.username, DESIRED_USER.email);
-    if(commitChange == true) console.log('\n -----> GIT CONFIG VALUES CHANGED <-----')
-    else console.log('\n -----> ERROR CHANGING GIT CONFIG VALUES <-----')
+    var commitChange = await cred_helper.changeCommitName(DESIRED_USER.username, DESIRED_USER.email);
+    console.log(`\n -----> GIT CONFIG MSG: ${commitChange} <-----\n`);
 
   }
   catch(err){

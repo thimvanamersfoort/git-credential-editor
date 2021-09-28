@@ -46,13 +46,13 @@ async function changeCommitName(username, email){
     await ps.addCommand(`git config --global user.name ${username}`);
     await ps.addCommand(`git config --global user.email ${email}`);
 
-    await ps.invoke();
+    var output = await ps.invoke();
     await ps.dispose();
 
-    return true;
+    return "Git config variables changed";
   }
   catch(err){
-    return false;
+    return err;
   }
 }
 
